@@ -201,9 +201,9 @@ always@(posedge clk_i or negedge rst_i) begin
                 if(mem_ack_i) begin            //wait for data memory acknowledge
                     // TODO: add you code here! 
                     state <= STATE_READMISS;
-                    mem_enable  <= 1'b0;
+                    mem_enable  <= 1'b1;
                     mem_write   <= 1'b0;
-                    cache_we    <= 1'b1;
+                    cache_we    <= 1'b0;
                     write_back  <= 1'b0;
                 end
                 else begin

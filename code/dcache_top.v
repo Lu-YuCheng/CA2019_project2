@@ -127,14 +127,15 @@ assign  r_hit_data = (hit) ? sram_cache_data : mem_data_i;
 // read data :  256-bit to 32-bit
 always@(p1_offset or r_hit_data) begin
     // TODO: add you code here! (p1_data=...?)
-    p1_data = r_hit_data[(offset) : (offset + 31)];
+    p1_data = r_hit_data[offset +: 32];
 end
 
 
 // write data :  32-bit to 256-bit
 always@(p1_offset or r_hit_data or p1_data_i) begin
     // TODO: add you code here! (w_hit_data=...?)
-    w_hit_data = {r_hit_data[0 : (offset - 1)], p1_data_i, r_hit_data[(offset + 32) : 255]};
+    w_hit_data = r_hit_data;
+    w_hit_data[offset +: 32] = p1_data_i;
 end
 
 

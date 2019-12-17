@@ -90,6 +90,8 @@ wire                  write_hit;
 wire                  p1_req;
 reg     [31:0]        p1_data;
 
+wire   [7:0]    offset  = {p1_offset, 3'b0};
+
 // project1 interface
 assign    p1_req     = p1_MemRead_i | p1_MemWrite_i;
 assign    p1_offset  = p1_addr_i[4:0];
@@ -125,14 +127,14 @@ assign  r_hit_data = (hit) ? sram_cache_data : mem_data_i;
 // read data :  256-bit to 32-bit
 always@(p1_offset or r_hit_data) begin
     // TODO: add you code here! (p1_data=...?)
-    p1_data = r_hit_data[(p1_offset << 3) : (p1_offset << 3) + 31];
+    p1_data = r_hit_data[(offset) : (offset + 31)];
 end
 
 
 // write data :  32-bit to 256-bit
 always@(p1_offset or r_hit_data or p1_data_i) begin
     // TODO: add you code here! (w_hit_data=...?)
-    w_hit_data = {r_hit_data[0 : (p1_offset << 3) - 1], p1_data_i, r_hit_data[(p1_offset << 3) + 32 : 255]};
+    w_hit_data = {r_hit_data[0 : (offset - 1)], p1_data_i, r_hit_data[(offset + 32) : 255]};
 end
 
 

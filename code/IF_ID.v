@@ -3,6 +3,7 @@ module IF_ID(
     clk_i,
     rst_i,
     start_i,
+    mem_stall_i,
     IF_IDWrite_i,
     IF_IDflush_i,
     pc_i,
@@ -15,6 +16,7 @@ module IF_ID(
 input               clk_i;
 input               rst_i;
 input               start_i;
+input               mem_stall_i;
 input               IF_IDWrite_i;
 input               IF_IDflush_i;
 input       [31:0]  pc_i;
@@ -26,6 +28,8 @@ always@(posedge clk_i or negedge rst_i) begin
     if(~rst_i) begin
         pc_o <= 32'b0;
         instr_o <= 32'b0;
+    end
+    else if(mem_stall_i) begin
     end
     else if(~IF_IDWrite_i) begin
         pc_o <= pc_o;

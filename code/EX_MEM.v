@@ -3,6 +3,7 @@ module EX_MEM(
     clk_i,
     rst_i,
     start_i,
+    mem_stall_i,
     ALUResult_i,
     RS2data_i,
     MemRead_i,
@@ -24,6 +25,7 @@ module EX_MEM(
 input                   clk_i;
 input                   rst_i;
 input                   start_i;
+input                   mem_stall_i;
 input       [31:0]      ALUResult_i;
 input       [31:0]      RS2data_i;
 input                   MemRead_i;
@@ -50,6 +52,8 @@ always@(posedge clk_i or negedge rst_i) begin
         MemWrite_o      <=   MemWrite_i;
         RegWrite_o      <=   RegWrite_i;
         RDaddr_o        <=   RDaddr_i;
+    end
+    else if(mem_stall_i) begin
     end
     else begin
         ALUResult_o     <=   32'b0;

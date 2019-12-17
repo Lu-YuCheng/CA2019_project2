@@ -3,6 +3,7 @@ module ID_EX(
     clk_i,
     rst_i,
     start_i,
+    mem_stall_i,
     pc_i,
     MemRead_i,
     MemtoReg_i,
@@ -37,6 +38,7 @@ module ID_EX(
 input               clk_i;
 input               rst_i;
 input               start_i;
+input               mem_stall_i;
 input       [31:0]  pc_i;
 input               MemRead_i;
 input               MemtoReg_i;
@@ -84,6 +86,8 @@ always@(posedge clk_i or negedge rst_i) begin
         RDaddr_o    <=   RDaddr_i;
         RS1addr_o   <=   RS1addr_i;
         RS2addr_o   <=   RS2addr_i;
+    end
+    else if(mem_stall_i) begin
     end
     else begin
         pc_o        <=   32'b0;

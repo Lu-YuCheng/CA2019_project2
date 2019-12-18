@@ -25,11 +25,11 @@ output reg  [31:0]  pc_o;
 output reg  [31:0]  instr_o;
 
 always@(posedge clk_i or negedge rst_i) begin
-    if(~rst_i) begin
+    if(mem_stall_i)begin
+    end
+    else if(~rst_i) begin
         pc_o <= 32'b0;
         instr_o <= 32'b0;
-    end
-    else if(mem_stall_i) begin
     end
     else if(~IF_IDWrite_i) begin
         pc_o <= pc_o;

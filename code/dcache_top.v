@@ -90,7 +90,9 @@ wire                  write_hit;
 wire                  p1_req;
 reg     [31:0]        p1_data;
 
-wire   [7:0]    offset  = {p1_offset, 3'b0};
+wire   [7:0]          offset;
+
+assign offset = (p1_offset >> 2)*32;
 
 // project1 interface
 assign    p1_req     = p1_MemRead_i | p1_MemWrite_i;

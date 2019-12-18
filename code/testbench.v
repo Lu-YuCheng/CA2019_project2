@@ -46,6 +46,10 @@ Data_Memory Data_Memory
 );
   
 initial begin
+    $dumpfile("debug.vcd");
+    $dumpvars;
+
+    
     counter = 0;
     
     // initialize instruction memory (1KB)
@@ -92,7 +96,7 @@ initial begin
 end
   
 always@(posedge Clk) begin
-    if(counter == 1500) begin    // store cache to memory
+    if(counter == 300) begin    // store cache to memory
         $fdisplay(outfile, "Flush Cache! \n");
         for(i=0; i<32; i=i+1) begin
             tag = CPU.dcache.dcache_tag_sram.memory[i];
@@ -101,7 +105,7 @@ always@(posedge Clk) begin
             Data_Memory.memory[address] = CPU.dcache.dcache_data_sram.memory[i];
         end 
     end
-    if(counter > 1500) begin    // stop 
+    if(counter > 300) begin    // stop 
         $finish;
     end
         

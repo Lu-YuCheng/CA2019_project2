@@ -71,7 +71,9 @@ output  reg [4:0]   RS2addr_o;
 
 // Assignment
 always@(posedge clk_i or negedge rst_i) begin
-    if(start_i && rst_i) begin
+    if(mem_stall_i) begin
+    end
+    else if(start_i && rst_i) begin
         pc_o        <=   pc_i;
         MemRead_o   <=   MemRead_i;
         MemtoReg_o  <=   MemtoReg_i;
@@ -86,8 +88,6 @@ always@(posedge clk_i or negedge rst_i) begin
         RDaddr_o    <=   RDaddr_i;
         RS1addr_o   <=   RS1addr_i;
         RS2addr_o   <=   RS2addr_i;
-    end
-    else if(mem_stall_i) begin
     end
     else begin
         pc_o        <=   32'b0;

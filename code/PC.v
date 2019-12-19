@@ -31,9 +31,11 @@ always@(posedge clk_i or negedge rst_i) begin
         else if(PCWrite_i)    begin
             if(start_i)
                 pc_o <= pc_i;
+            else
+                pc_o <= pc_o;
         end
         else
-            pc_o <= 32'b0;
+            pc_o <= pc_o;
     end
 end
 

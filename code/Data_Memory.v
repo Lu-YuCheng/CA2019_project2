@@ -24,8 +24,7 @@ output   [255:0]    data_o;
 // Memory
 reg      [255:0]    memory[0:511];    //16KB
 reg      [3:0]      count;
-wire                ack;
-reg                 write_reg;
+
 reg      [255:0]    data;
 wire     [26:0]     addr;
 
@@ -34,93 +33,48 @@ parameter STATE_IDLE            = 1'h0,
 
 reg        [1:0]        state;
 
-assign    ack_o = ack;
+assign    ack_o = (state == STATE_WAIT) && (count == 4'd9);
 assign    addr = addr_i>>5;
 assign    data_o = data;
 
-//Controller 
-always@(posedge clk_i) begin
+always@(posedge clk_i or negedge rst_i) begin
     if(~rst_i) begin
         state <= STATE_IDLE;
-    end
-    else begin
-        case(state) 
-            STATE_IDLE: begin
-                if(enable_i) begin
-                    state <= STATE_WAIT;
-                end
-                else begin
-                    state <= state;
-                end
-            end
-            STATE_WAIT: begin
-                if(count == 4'd9) begin    
-                    state <= STATE_IDLE;
-                end
-                else begin
-                    state <= state;
-                end
-            end
-            default: begin
-                state <= state;
-            end
-        endcase    
-    end
-end
-
-always@(posedge clk_i) begin
-    if(~rst_i) begin
         count <= 4'd0;
     end
     else begin
         case(state) 
             STATE_IDLE: begin
-                count <= 4'd0;
+                // write_reg <= write_i;
+                if(enable_i) begin
+                    state <= STATE_WAIT;
+                    count <= count + 1;
+                end
             end
             STATE_WAIT: begin
-                count <= count + 1;
-            end
-            default: begin
-                count <= 4'd0;
+                if(count == 4'd9) begin    
+                    state <= STATE_IDLE;
+                    count <= 0;
+                end
+                else begin
+                    count <= count + 1;
+                end
             end
         endcase    
     end
 end
 
-assign ack = (state == STATE_WAIT) && (count == 4'd9);
 
 always@(posedge clk_i) begin
-    if(~rst_i) begin
-        write_reg <= 0;
-    end
-    else begin
-        case(state) 
-            STATE_IDLE: begin
-                write_reg <= write_i;
-            end
-            STATE_WAIT: begin
-                write_reg <= write_reg;
-            end
-            default: begin
-                write_reg <= 0;
-            end
-        endcase    
+    if (ack_o) begin
+        if (write_i) begin
+            memory[addr] <= data_i;
+            data <= data_i;
+        end
+        else begin
+            data = memory[addr];
+        end
     end
 end
-
-// Read Data       
-always@(posedge clk_i) begin
-    if(ack && !write_reg) begin
-        data = memory[addr];
-    end
-end
-
-// Write Data      
-always@(posedge clk_i) begin
-    if(ack && write_reg) begin
-        memory[addr] <= data_i;
-    end
-end
-
 
 endmodule
